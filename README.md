@@ -26,10 +26,32 @@ cd ~/my-zsh-setup
 ./install.sh --no-backup
 ```
 
+### Instalação e troca do shell padrão para zsh
+```bash
+./install.sh --change-shell
+```
+
 ### Ajuda
 ```bash
 ./install.sh --help
 ```
+
+## 🧰 Dependências
+
+O script verifica e tenta instalar automaticamente as dependências abaixo, detectando o
+gerenciador de pacotes disponível (`apt`, `dnf`, `yum`, `pacman`, `zypper` no Linux, ou
+`brew` no macOS):
+
+| Dependência | Finalidade | Obrigatória? |
+|-------------|-----------|--------------|
+| `git`   | Instalar Oh My Zsh, plugins e tema Spaceship | Sim |
+| `curl`  | Baixar o instalador do Oh My Zsh e a fonte Nerd Font | Sim |
+| `zsh`   | Shell utilizado pela configuração | Sim |
+| `unzip` | Descompactar a fonte Nerd Font (Linux) | Apenas Linux |
+| `fc-cache` | Atualizar cache de fontes (Linux, se disponível) | Opcional |
+
+Se nenhum gerenciador de pacotes suportado for encontrado, o script exibe uma mensagem
+clara pedindo para instalar a dependência manualmente antes de continuar.
 
 ## 📦 O que é Instalado?
 
@@ -43,11 +65,17 @@ cd ~/my-zsh-setup
 
 ## ✨ Características
 
-- ✅ **Automação** - Script bash de instalação automática
+- ✅ **Automação** - Script bash de instalação automática, idempotente e robusto (`set -euo pipefail`)
 - ✅ **Backup** - Cria backups com timestamp antes de alterações
 - ✅ **Merge** - Detecta e preserva plugins e temas existentes
 - ✅ **SFTP** - Otimizado para sessões não-interativas (SFTP/MobaXterm)
-- ✅ **Verificação** - Testes automáticos de variáveis de ambiente
+- ✅ **Dependências** - Detecta e instala automaticamente git, curl, zsh e unzip
+- ✅ **Oh My Zsh** - Instala o Oh My Zsh de forma não-interativa quando ausente
+- ✅ **Plugins** - Instala `zsh-syntax-highlighting` e `zsh-autosuggestions` via git clone
+- ✅ **Nerd Font** - Instala a fonte Meslo Nerd Font (Linux e macOS)
+- ✅ **Tema Spaceship** - Clona e configura o tema `spaceship-prompt`
+- ✅ **Idempotência** - Pode ser executado múltiplas vezes sem duplicar instalações
+- ✅ **Verificação** - Testes automáticos de variáveis de ambiente e componentes instalados
 - ✅ **Rollback** - Instruções para reverter em caso de necessidade
 
 ## 🔧 Variáveis de Ambiente
@@ -131,10 +159,28 @@ O projeto pré-configura os seguintes plugins compatíveis:
 
 Tema: **spaceship**
 
+O script clona automaticamente [spaceship-prompt](https://github.com/spaceship-prompt/spaceship-prompt)
+em `$ZSH_CUSTOM/themes/spaceship-prompt` e cria o symlink `spaceship.zsh-theme` necessário
+para o Oh My Zsh reconhecer o tema.
+
 Para mudar de tema, edite `~/.zshrc`:
 ```bash
 ZSH_THEME="seu-tema-aqui"
 ```
+
+## 🔤 Fonte Recomendada (Nerd Font)
+
+O tema Spaceship e diversos plugins usam ícones especiais que exigem uma **Nerd Font**.
+O script instala automaticamente a fonte **Meslo Nerd Font**:
+
+- **Linux**: baixa o zip oficial do [nerd-fonts](https://github.com/ryanoasis/nerd-fonts),
+  instala em `~/.local/share/fonts` e atualiza o cache com `fc-cache` (se disponível).
+- **macOS**: instala via Homebrew Cask (`brew install --cask font-meslo-lg-nerd-font`),
+  quando o Homebrew estiver disponível.
+
+Após a instalação, **configure o terminal** (iTerm2, Windows Terminal, GNOME Terminal, etc.)
+para usar a fonte **"MesloLGS NF"**, caso contrário os ícones do prompt aparecerão como
+caracteres inválidos (□).
 
 ## 📄 Licença
 
